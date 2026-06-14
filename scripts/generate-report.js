@@ -490,7 +490,7 @@ code{font-size:11px;background:var(--bg3);padding:1px 5px;border-radius:3px;colo
   <div class="dq-row"><span class="dq-source">LinkedIn · ASODigital85 (Windsor.ai)</span><span class="dq-ok">✓ Live</span></div>
   <div class="dq-row"><span class="dq-source">LinkedIn · Bellerive (Windsor.ai)</span><span class="dq-warn">⚠ Connected · zero activity</span></div>
   <div class="dq-row"><span class="dq-source">LinkedIn · Getsecondopinion (Windsor.ai)</span><span class="dq-na">○ Dormant</span></div>
-  <div class="dq-row"><span class="dq-source">X/Twitter (Windsor.ai)</span><span class="${xStatus === "live" ? "dq-ok">✓ Live" : "dq-warn">⚠ Credentials submitted · propagating"}</span></div>
+  <div class="dq-row"><span class="dq-source">X/Twitter (Windsor.ai)</span><span class="${xStatus === 'live' ? 'dq-ok' : 'dq-warn'}">${xStatus === 'live' ? '✓ Live' : '⚠ Credentials submitted · propagating'}</span></div>
   ${umamiRows}
   <div class="dq-row"><span class="dq-source">DEX Bot</span><span class="dq-warn">⚠ Paper mode · Supabase pause risk</span></div>
   <div class="dq-row"><span class="dq-source">GA4</span><span class="dq-na">○ Tags pending for payroll research pages</span></div>
