@@ -2,621 +2,363 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ASODI85 · Daily Intelligence Report · 2026-06-14</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ASODI85 · Daily Report · 2026-06-14</title>
 <style>
-  :root {
-    --bg: #0d0f14;
-    --bg2: #13161e;
-    --bg3: #1a1e28;
-    --border: rgba(255,255,255,0.07);
-    --border2: rgba(255,255,255,0.13);
-    --text: #e8eaf0;
-    --muted: #8890a4;
-    --accent: #4f8ef7;
-    --accent2: #2dd4a7;
-    --warn: #f0a232;
-    --danger: #e85555;
-    --success: #2dd4a7;
-    --purple: #9b72f7;
-    --font: 'Inter', system-ui, -apple-system, sans-serif;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 14px; line-height: 1.6; min-height: 100vh; }
-
-  /* ── Layout ── */
-  .page { max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
-
-  /* ── Header ── */
-  .report-header { border-bottom: 1px solid var(--border2); padding-bottom: 1.5rem; margin-bottom: 2rem; }
-  .report-header .logo-row { display: flex; align-items: center; gap: 12px; margin-bottom: .75rem; }
-  .logo-badge { background: var(--accent); color: #fff; font-size: 11px; font-weight: 700; letter-spacing: .08em; padding: 3px 9px; border-radius: 4px; }
-  .aria-badge { background: var(--purple); color: #fff; font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 4px; }
-  .report-title { font-size: 22px; font-weight: 600; color: #fff; }
-  .report-meta { font-size: 12px; color: var(--muted); margin-top: 4px; }
-  .report-meta span { margin-right: 20px; }
-  .status-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
-  .status-pill { font-size: 11px; padding: 3px 10px; border-radius: 20px; border: 1px solid; }
-  .s-live { border-color: var(--success); color: var(--success); }
-  .s-zero { border-color: var(--warn); color: var(--warn); }
-  .s-na { border-color: var(--muted); color: var(--muted); }
-  .s-pending { border-color: var(--accent); color: var(--accent); }
-
-  /* ── Section ── */
-  .section { margin-bottom: 2.5rem; }
-  .section-title { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--border); padding-bottom: 6px; margin-bottom: 1rem; }
-
-  /* ── Exec Summary ── */
-  .exec-card { background: var(--bg2); border: 1px solid var(--border2); border-radius: 10px; padding: 1.25rem 1.5rem; }
-  .aria-label { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--purple); font-weight: 600; margin-bottom: .75rem; }
-  .aria-dot { width: 8px; height: 8px; background: var(--purple); border-radius: 50%; animation: pulse 2s infinite; }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
-  .conclusion { display: flex; gap: 10px; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
-  .conclusion:last-child { border-bottom: none; }
-  .c-icon { flex-shrink: 0; font-size: 16px; margin-top: 1px; }
-  .c-text { color: var(--text); }
-  .c-text strong { color: #fff; }
-
-  /* ── Metric grid ── */
-  .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 1rem; }
-  .metric-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: .75rem 1rem; }
-  .metric-label { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
-  .metric-value { font-size: 20px; font-weight: 600; color: #fff; }
-  .metric-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
-  .metric-up { color: var(--success); font-size: 11px; margin-top: 2px; }
-  .metric-zero { color: var(--warn); font-size: 11px; margin-top: 2px; }
-
-  /* ── Page cards ── */
-  .page-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 1rem; }
-  .page-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: .75rem 1rem; }
-  .page-card-name { font-size: 12px; font-weight: 600; color: #fff; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
-  .page-stat { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); padding: 2px 0; }
-  .page-stat span:last-child { color: var(--text); font-weight: 500; }
-  .dot-live { width: 6px; height: 6px; background: var(--success); border-radius: 50%; flex-shrink: 0; }
-  .dot-zero { width: 6px; height: 6px; background: var(--warn); border-radius: 50%; flex-shrink: 0; }
-  .dot-na { width: 6px; height: 6px; background: var(--muted); border-radius: 50%; flex-shrink: 0; }
-
-  /* ── Content queue ── */
-  .content-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-  .content-table th { text-align: left; color: var(--muted); font-weight: 500; padding: 6px 8px; border-bottom: 1px solid var(--border2); }
-  .content-table td { padding: 7px 8px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: top; }
-  .content-table tr:last-child td { border-bottom: none; }
-  .tag { display: inline-block; font-size: 10px; padding: 2px 7px; border-radius: 3px; font-weight: 600; }
-  .tag-posted { background: rgba(45,212,167,.15); color: var(--success); }
-  .tag-queued { background: rgba(79,142,247,.15); color: var(--accent); }
-  .tag-draft { background: rgba(144,151,164,.15); color: var(--muted); }
-  .tag-x { background: rgba(0,0,0,.4); color: #fff; border: 1px solid #333; }
-  .tag-li { background: rgba(10,102,194,.2); color: #6db5f7; }
-  .tag-ig { background: rgba(193,53,132,.2); color: #f06292; }
-  .tag-fb { background: rgba(24,119,242,.2); color: #6db5f7; }
-
-  /* ── Agent directives ── */
-  .directive-list { display: flex; flex-direction: column; gap: 8px; }
-  .directive { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: .75rem 1rem; display: flex; gap: 12px; align-items: flex-start; }
-  .dir-agent { font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 4px; white-space: nowrap; flex-shrink: 0; }
-  .ag-aria { background: rgba(155,114,247,.2); color: var(--purple); }
-  .ag-scout { background: rgba(79,142,247,.2); color: var(--accent); }
-  .ag-nova { background: rgba(240,162,50,.2); color: var(--warn); }
-  .ag-pulse { background: rgba(45,212,167,.2); color: var(--success); }
-  .ag-relay { background: rgba(232,85,85,.2); color: var(--danger); }
-  .ag-tempo { background: rgba(255,255,255,.1); color: var(--text); }
-  .dir-body { flex: 1; }
-  .dir-action { font-size: 13px; color: var(--text); }
-  .dir-action strong { color: #fff; }
-  .dir-meta { font-size: 11px; color: var(--muted); margin-top: 3px; }
-  .priority-high { color: var(--danger); font-weight: 600; }
-  .priority-med { color: var(--warn); font-weight: 600; }
-  .priority-low { color: var(--muted); font-weight: 600; }
-
-  /* ── Project pulse ── */
-  .project-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
-  .proj-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: .75rem 1rem; }
-  .proj-name { font-size: 12px; font-weight: 600; color: #fff; margin-bottom: 5px; }
-  .proj-status { font-size: 11px; margin-bottom: 4px; }
-  .proj-blocker { font-size: 11px; color: var(--warn); }
-  .proj-ok { color: var(--success); }
-  .proj-blocked { color: var(--danger); }
-  .proj-paused { color: var(--warn); }
-
-  /* ── Web analytics placeholder ── */
-  .web-note { background: var(--bg3); border: 1px dashed var(--border2); border-radius: 8px; padding: 1rem 1.25rem; font-size: 12px; color: var(--muted); }
-  .web-note strong { color: var(--accent); }
-
-  /* ── Data quality ── */
-  .dq-row { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
-  .dq-row:last-child { border-bottom: none; }
-  .dq-source { color: var(--text); }
-  .dq-ok { color: var(--success); }
-  .dq-warn { color: var(--warn); }
-  .dq-na { color: var(--muted); }
-
-  /* ── Footer ── */
-  .report-footer { border-top: 1px solid var(--border); padding-top: 1rem; margin-top: 3rem; font-size: 11px; color: var(--muted); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
-
-  /* ── Responsive ── */
-  @media (max-width: 600px) {
-    .page { padding: 1rem 1rem 3rem; }
-    .metric-grid { grid-template-columns: repeat(2, 1fr); }
-  }
+:root{--bg:#0d0f14;--bg2:#13161e;--bg3:#1a1e28;--border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.13);--text:#e8eaf0;--muted:#8890a4;--accent:#4f8ef7;--accent2:#2dd4a7;--warn:#f0a232;--danger:#e85555;--success:#2dd4a7;--purple:#9b72f7;--font:'Inter',system-ui,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px;line-height:1.6;min-height:100vh}
+.page{max-width:960px;margin:0 auto;padding:2rem 1.5rem 4rem}
+.report-header{border-bottom:1px solid var(--border2);padding-bottom:1.5rem;margin-bottom:2rem}
+.logo-row{display:flex;align-items:center;gap:12px;margin-bottom:.75rem}
+.logo-badge{background:var(--accent);color:#fff;font-size:11px;font-weight:700;letter-spacing:.08em;padding:3px 9px;border-radius:4px}
+.aria-badge{background:var(--purple);color:#fff;font-size:11px;font-weight:600;padding:3px 9px;border-radius:4px}
+.report-title{font-size:22px;font-weight:600;color:#fff}
+.report-meta{font-size:12px;color:var(--muted);margin-top:4px}
+.report-meta span{margin-right:20px}
+.status-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.status-pill{font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid}
+.s-live{border-color:var(--success);color:var(--success)}
+.s-zero{border-color:var(--warn);color:var(--warn)}
+.s-na{border-color:var(--muted);color:var(--muted)}
+.s-pending{border-color:var(--accent);color:var(--accent)}
+.section{margin-bottom:2.5rem}
+.section-title{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);padding-bottom:6px;margin-bottom:1rem}
+.exec-card{background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:1.25rem 1.5rem}
+.aria-label{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--purple);font-weight:600;margin-bottom:.75rem}
+.aria-dot{width:8px;height:8px;background:var(--purple);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.conclusion{display:flex;gap:10px;padding:6px 0;border-bottom:1px solid var(--border);font-size:13px}
+.conclusion:last-child{border-bottom:none}
+.c-icon{flex-shrink:0;font-size:16px;margin-top:1px}
+.metric-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:1rem}
+.metric-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:.75rem 1rem}
+.metric-label{font-size:11px;color:var(--muted);margin-bottom:4px}
+.metric-value{font-size:20px;font-weight:600;color:#fff}
+.metric-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.warn-sub{color:var(--warn)}
+.success-sub{color:var(--success)}
+.page-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:1rem}
+.page-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:.75rem 1rem}
+.page-card-name{font-size:12px;font-weight:600;color:#fff;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.page-stat{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);padding:2px 0}
+.page-stat span:last-child{color:var(--text);font-weight:500}
+.dot-live{width:6px;height:6px;background:var(--success);border-radius:50%;flex-shrink:0}
+.dot-zero{width:6px;height:6px;background:var(--warn);border-radius:50%;flex-shrink:0}
+.dot-na{width:6px;height:6px;background:var(--muted);border-radius:50%;flex-shrink:0}
+.content-table{width:100%;border-collapse:collapse;font-size:12px}
+.content-table th{text-align:left;color:var(--muted);font-weight:500;padding:6px 8px;border-bottom:1px solid var(--border2)}
+.content-table td{padding:7px 8px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:top}
+.content-table tr:last-child td{border-bottom:none}
+.tag{display:inline-block;font-size:10px;padding:2px 7px;border-radius:3px;font-weight:600}
+.tag-posted{background:rgba(45,212,167,.15);color:var(--success)}
+.tag-queued{background:rgba(79,142,247,.15);color:var(--accent)}
+.tag-draft{background:rgba(144,151,164,.15);color:var(--muted)}
+.tag-x{background:rgba(0,0,0,.4);color:#fff;border:1px solid #333}
+.tag-li{background:rgba(10,102,194,.2);color:#6db5f7}
+.tag-ig{background:rgba(193,53,132,.2);color:#f06292}
+.tag-fb{background:rgba(24,119,242,.2);color:#6db5f7}
+.directive-list{display:flex;flex-direction:column;gap:8px}
+.directive{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:.75rem 1rem;display:flex;gap:12px;align-items:flex-start}
+.dir-agent{font-size:11px;font-weight:700;padding:3px 8px;border-radius:4px;white-space:nowrap;flex-shrink:0}
+.ag-aria{background:rgba(155,114,247,.2);color:var(--purple)}
+.ag-scout{background:rgba(79,142,247,.2);color:var(--accent)}
+.ag-nova{background:rgba(240,162,50,.2);color:var(--warn)}
+.ag-pulse{background:rgba(45,212,167,.2);color:var(--success)}
+.ag-relay{background:rgba(232,85,85,.2);color:var(--danger)}
+.ag-tempo{background:rgba(255,255,255,.1);color:var(--text)}
+.dir-body{flex:1}
+.dir-action{font-size:13px;color:var(--text)}
+.dir-meta{font-size:11px;color:var(--muted);margin-top:3px}
+.priority-high{color:var(--danger);font-weight:600}
+.priority-med{color:var(--warn);font-weight:600}
+.priority-low{color:var(--muted);font-weight:600}
+.project-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.proj-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:.75rem 1rem}
+.proj-name{font-size:12px;font-weight:600;color:#fff;margin-bottom:5px}
+.proj-status{font-size:11px;margin-bottom:4px}
+.proj-ok{color:var(--success)}
+.proj-blocked{color:var(--danger)}
+.proj-paused{color:var(--warn)}
+.proj-note{font-size:11px;color:var(--muted)}
+.web-note{background:var(--bg3);border:1px dashed var(--border2);border-radius:8px;padding:1rem 1.25rem;font-size:12px;color:var(--muted)}
+.web-note strong{color:var(--accent)}
+.dq-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px;flex-wrap:wrap;gap:4px}
+.dq-row:last-child{border-bottom:none}
+.dq-source{color:var(--text)}
+.dq-ok{color:var(--success)}
+.dq-warn{color:var(--warn)}
+.dq-na{color:var(--muted)}
+.report-footer{border-top:1px solid var(--border);padding-top:1rem;margin-top:3rem;font-size:11px;color:var(--muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+code{font-size:11px;background:var(--bg3);padding:1px 5px;border-radius:3px;color:var(--accent2)}
+@media(max-width:600px){.page{padding:1rem 1rem 3rem}.metric-grid{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
 <body>
 <div class="page">
 
-  <!-- ══ HEADER ══ -->
-  <div class="report-header">
-    <div class="logo-row">
-      <span class="logo-badge">JARVIC07</span>
-      <span class="aria-badge">⬡ ARIA v1.0</span>
-    </div>
-    <div class="report-title">Daily Intelligence Report</div>
-    <div class="report-meta">
-      <span>📅 Sunday 14 June 2026</span>
-      <span>⏱ Generated 08:00 CET</span>
-      <span>🔖 Report ID: DIR-20260614-001</span>
-    </div>
-    <div class="status-row">
-      <span class="status-pill s-live">✓ Instagram · live</span>
-      <span class="status-pill s-zero">⚠ Facebook · connected / zero data</span>
-      <span class="status-pill s-live">✓ LinkedIn · 4 pages · live</span>
-      <span class="status-pill s-na">○ X/Twitter · not in Windsor</span>
-      <span class="status-pill s-na">○ Umami · API key needed</span>
-      <span class="status-pill s-pending">◌ DEX Bot · paper mode</span>
-    </div>
+<!-- HEADER -->
+<div class="report-header">
+  <div class="logo-row">
+    <span class="logo-badge">JARVIC07</span>
+    <span class="aria-badge">⬡ ARIA v1.0</span>
   </div>
+  <div class="report-title">Daily Intelligence Report</div>
+  <div class="report-meta">
+    <span>📅 Sunday, 14 June 2026</span>
+    <span>⏱ Generated 16:37 CET</span>
+    <span>🔖 DIR-20260614-001</span>
+  </div>
+  <div class="status-row">
+    <span class="status-pill s-live">✓ Instagram · live</span>
+    <span class="status-pill s-zero">⚠ Facebook · connected / zero data</span>
+    <span class="status-pill s-live">✓ LinkedIn · 4 pages · live</span>
+    <span class="status-pill s-pending">◌ X/Twitter · connecting</span>
+    <span class="status-pill s-na">○ Umami · API key needed</span>
+    <span class="status-pill s-pending">◌ DEX Bot · paper mode</span>
+  </div>
+</div>
 
-  <!-- ══ 1. EXECUTIVE SUMMARY ══ -->
-  <div class="section">
-    <div class="section-title">1 · Executive Summary — ARIA conclusions</div>
-    <div class="exec-card">
-      <div class="aria-label"><span class="aria-dot"></span> ARIA · Orchestrator · Cycle 001</div>
-      <div class="conclusion">
-        <span class="c-icon">📈</span>
-        <div class="c-text"><strong>SevenSprings Technology AG LinkedIn</strong> is the single highest-performing organic channel with 1,078 impressions in 30 days (820 from 7ST alone). The June 3–4 spike (127 + 106 impressions) should be reverse-engineered to identify the post format and replicate it weekly.</div>
+<!-- 1. EXEC SUMMARY -->
+<div class="section">
+  <div class="section-title">1 · Executive Summary — ARIA conclusions</div>
+  <div class="exec-card">
+    <div class="aria-label"><span class="aria-dot"></span> ARIA · Orchestrator · cycle 2026-06-14</div>
+    <div class="conclusion"><span class="c-icon">📈</span><div class="c-text">Instagram shows zero engagement across all metrics for past 30 days; account appears inactive or shadowbanned.</div></div><div class="conclusion"><span class="c-icon">🔥</span><div class="c-text">LinkedIn maintains 316 followers with modest 9 new followers YTD; peak performance was June 3 with 127 impressions.</div></div><div class="conclusion"><span class="c-icon">⚠️</span><div class="c-text">Combined social presence demonstrates minimal reach; Instagram crisis requires immediate investigation and recovery action.</div></div><div class="conclusion"><span class="c-icon">🧩</span><div class="c-text">X/Twitter status pending prevents complete platform analysis; engagement data incomplete for comprehensive strategy assessment.</div></div><div class="conclusion"><span class="c-icon">🚀</span><div class="c-text">Overall performance indicates urgent need for content reactivation and platform health audit across all channels.</div></div>
+  </div>
+</div>
+
+<!-- 2. INSTAGRAM -->
+<div class="section">
+  <div class="section-title">2 · Instagram · @asodigital852</div>
+  <div class="metric-grid">
+    <div class="metric-card"><div class="metric-label">Followers (today)</div><div class="metric-value">44</div><div class="metric-sub ">@asodigital852</div></div>
+    <div class="metric-card"><div class="metric-label">Reach · last 30d</div><div class="metric-value">0</div><div class="metric-sub ">unique accounts</div></div>
+    <div class="metric-card"><div class="metric-label">Views · last 30d</div><div class="metric-value">0</div><div class="metric-sub ">content plays</div></div>
+    <div class="metric-card"><div class="metric-label">Likes · last 30d</div><div class="metric-value">0</div><div class="metric-sub ">0 comments · 0 saves</div></div>
+    <div class="metric-card"><div class="metric-label">YTD Reach</div><div class="metric-value">0</div><div class="metric-sub ">since 1 Jan</div></div>
+    <div class="metric-card"><div class="metric-label">YTD Views</div><div class="metric-value">0</div><div class="metric-sub ">peak: 24 Apr +82 shares</div></div>
+    <div class="metric-card"><div class="metric-label">Yesterday reach</div><div class="metric-value">0</div><div class="metric-sub warn-sub">no post · silent</div></div>
+    <div class="metric-card"><div class="metric-label">Avg daily reach</div><div class="metric-value">0</div><div class="metric-sub ">last 30 days</div></div>
+  </div>
+</div>
+
+<!-- 3. FACEBOOK -->
+<div class="section">
+  <div class="section-title">3 · Facebook Organic · ASoDigital85 Page</div>
+  <div class="metric-grid">
+    <div class="metric-card"><div class="metric-label">Status</div><div class="metric-value">Connected</div><div class="metric-sub warn-sub">all metrics = 0 · no published posts</div></div>
+    <div class="metric-card"><div class="metric-label">Connector</div><div class="metric-value">✓ Live</div><div class="metric-sub ">Windsor.ai ID: 1021240474414243</div></div>
+  </div>
+  <p style="font-size:12px;color:var(--muted);padding-left:4px;">Action: NOVA to draft + publish first post to activate insights.</p>
+</div>
+
+<!-- 4. LINKEDIN -->
+<div class="section">
+  <div class="section-title">4 · LinkedIn Organic · 4 Pages · Last 30 Days</div>
+  <div class="metric-grid">
+    <div class="metric-card"><div class="metric-label">Total impressions</div><div class="metric-value">0</div><div class="metric-sub ">all 4 pages</div></div>
+    <div class="metric-card"><div class="metric-label">Total clicks</div><div class="metric-value">0</div></div>
+    <div class="metric-card"><div class="metric-label">Reactions / Likes</div><div class="metric-value">0</div></div>
+    <div class="metric-card"><div class="metric-label">Combined followers</div><div class="metric-value">316</div><div class="metric-sub ">7ST 217 · BFS 87 · ASOD 11 · GSO 1</div></div>
+    <div class="metric-card"><div class="metric-label">New followers · 30d</div><div class="metric-value">+9</div><div class="metric-sub success-sub">7ST +6 · ASOD +3</div></div>
+    <div class="metric-card"><div class="metric-label">Peak day</div><div class="metric-value">3 Jun</div><div class="metric-sub ">127 impr. (7ST)</div></div>
+  </div>
+  <div class="page-cards">
+    <div class="page-card">
+      <div class="page-card-name">
+        <span class="dot-live"></span>
+        SevenSprings Technology AG
       </div>
-      <div class="conclusion">
-        <span class="c-icon">🔥</span>
-        <div class="c-text"><strong>Instagram had a viral moment on 24 April</strong> (82 shares, 172 interactions in a single day) but the account has not replicated that energy. The last 30 days average only 13 reach/day. Posting cadence is too sparse and irregular — currently active only ~18 of 30 days.</div>
-      </div>
-      <div class="conclusion">
-        <span class="c-icon">⚠️</span>
-        <div class="c-text"><strong>3 of 4 LinkedIn pages and Facebook are dormant.</strong> Bellerive (87 followers) and Getsecondopinion (1 follower) have zero content output. The Facebook page has the connector live but no post insights at all — requires content or diagnosis.</div>
-      </div>
-      <div class="conclusion">
-        <span class="c-icon">🧩</span>
-        <div class="c-text"><strong>Content pipeline is fragmented across platforms.</strong> RELAY posts to X/Twitter automatically, NOVA generates drafts for IG/LinkedIn/FB — but there is no unified queue visible in one place. This report will become that single source of truth once all connectors are wired.</div>
-      </div>
-      <div class="conclusion">
-        <span class="c-icon">🚀</span>
-        <div class="c-text"><strong>social-agent-v1 is blocked at S8</strong> (Instagram OAuth / Meta Developer App). Unblocking this is the highest-priority infrastructure action — it enables PULSE tracking, RELAY publishing, and full ARIA orchestration across all platforms.</div>
-      </div>
+      <div class="page-stat"><span>Followers</span><span>217</span></div>
+      <div class="page-stat"><span>30d Impressions</span><span>820</span></div>
+      <div class="page-stat"><span>Clicks</span><span>21</span></div>
+      <div class="page-stat"><span>New followers</span><span>+6</span></div>
+      <div class="page-stat"><span>Status</span><span style="color:var(--success)">Active</span></div>
     </div>
-  </div>
-
-  <!-- ══ 2. INSTAGRAM ══ -->
-  <div class="section">
-    <div class="section-title">2 · Instagram · @asodigital852</div>
-    <div class="metric-grid">
-      <div class="metric-card">
-        <div class="metric-label">Followers (today)</div>
-        <div class="metric-value">44</div>
-        <div class="metric-sub">@asodigital852</div>
+    <div class="page-card">
+      <div class="page-card-name">
+        <span class="dot-live"></span>
+        ASODigital85
       </div>
-      <div class="metric-card">
-        <div class="metric-label">Reach · last 30d</div>
-        <div class="metric-value">396</div>
-        <div class="metric-sub">unique accounts</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-label">Views · last 30d</div>
-        <div class="metric-value">550</div>
-        <div class="metric-sub">content plays</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-label">Likes · last 30d</div>
-        <div class="metric-value">71</div>
-        <div class="metric-zero">0 comments · 2 saves</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-label">YTD Reach (Jan–Jun)</div>
-        <div class="metric-value">620</div>
-        <div class="metric-sub">active since ~20 Apr</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-label">YTD Views</div>
-        <div class="metric-value">810</div>
-        <div class="metric-sub">peak: 24 Apr (+82 shares)</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-label">Yesterday's reach</div>
-        <div class="metric-value">0</div>
-        <div class="metric-zero">no post · silent day</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-label">Avg daily reach</div>
-        <div class="metric-value">13</div>
-        <div class="metric-sub">last 30 days</div>
-      </div>
+      <div class="page-stat"><span>Followers</span><span>11</span></div>
+      <div class="page-stat"><span>30d Impressions</span><span>57</span></div>
+      <div class="page-stat"><span>Clicks</span><span>1</span></div>
+      <div class="page-stat"><span>New followers</span><span>+3</span></div>
+      <div class="page-stat"><span>Status</span><span style="color:var(--success)">Active</span></div>
     </div>
-    <p style="font-size:12px;color:var(--muted);padding-left:4px;">⚠ Engagement is like-heavy but shallow — zero comments in 30 days. No stories, no reels data detected. ASODigital85 account active only ~18/30 days.</p>
-  </div>
-
-  <!-- ══ 3. FACEBOOK ══ -->
-  <div class="section">
-    <div class="section-title">3 · Facebook Organic · ASoDigital85 Page</div>
-    <div class="metric-grid">
-      <div class="metric-card">
-        <div class="metric-label">Page status</div>
-        <div class="metric-value" style="font-size:14px;color:var(--warn);">Connected · No Data</div>
-        <div class="metric-zero">all metrics returning 0</div>
+    <div class="page-card">
+      <div class="page-card-name">
+        <span class="dot-zero"></span>
+        Bellerive Financial Services AG
       </div>
-      <div class="metric-card">
-        <div class="metric-label">Connector</div>
-        <div class="metric-value" style="font-size:14px;color:var(--success);">✓ Live</div>
-        <div class="metric-sub">Windsor.ai ID: 1021240474414243</div>
-      </div>
+      <div class="page-stat"><span>Followers</span><span>87</span></div>
+      <div class="page-stat"><span>30d Impressions</span><span>0</span></div>
+      <div class="page-stat"><span>Clicks</span><span>0</span></div>
+      <div class="page-stat"><span>New followers</span><span>+0</span></div>
+      <div class="page-stat"><span>Status</span><span style="color:var(--warn)">Dormant</span></div>
     </div>
-    <p style="font-size:12px;color:var(--muted);padding-left:4px;">Likely cause: no published posts on the page, or insights not yet populated. Action: publish first post or verify page visibility in Meta Business Suite.</p>
+    <div class="page-card">
+      <div class="page-card-name">
+        <span class="dot-na"></span>
+        Getsecondopinion
+      </div>
+      <div class="page-stat"><span>Followers</span><span>1</span></div>
+      <div class="page-stat"><span>30d Impressions</span><span>0</span></div>
+      <div class="page-stat"><span>Clicks</span><span>0</span></div>
+      <div class="page-stat"><span>New followers</span><span>+0</span></div>
+      <div class="page-stat"><span>Status</span><span style="color:var(--muted)">Inactive</span></div>
+    </div></div>
+</div>
+
+<!-- 5. X/TWITTER -->
+<div class="section">
+  <div class="section-title">5 · X/Twitter · @Asodigital85 · RELAY Auto-Posts</div>
+  <div class="web-note" style="margin-bottom:1rem;"><strong>Connector status:</strong> X Organic credentials submitted — awaiting Windsor.ai propagation. RELAY post metrics will populate here automatically once live. Connect <code>x_organic</code> in Windsor.ai dashboard to complete.</div>
+  <table class="content-table">
+    <thead><tr><th>Time (CET)</th><th>Post preview</th><th>Status</th><th>Impressions</th><th>Likes</th><th>Agent</th></tr></thead>
+    <tbody>
+      <tr>
+        <td style="color:var(--muted);white-space:nowrap;">Yesterday · auto</td>
+        <td>Swiss payroll compliance in 2026: 5 things every HR manager must know before Q3… 🇨🇭 #SwissPayroll #HR</td>
+        <td><span class="tag tag-posted">posted</span></td>
+        <td style="color:var(--muted);">— pending sync</td>
+        <td style="color:var(--muted);">—</td>
+        <td style="color:var(--purple);">RELAY</td>
+      </tr>
+      <tr>
+        <td style="color:var(--muted);white-space:nowrap;">Today · 14:00</td>
+        <td>Your payroll is leaking money. Here's how AI catches the errors humans miss. #TITANx300 #PayrollAI</td>
+        <td><span class="tag tag-queued">queued</span></td>
+        <td>—</td><td>—</td>
+        <td style="color:var(--purple);">RELAY</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 6. CONTENT QUEUE -->
+<div class="section">
+  <div class="section-title">6 · Content Queue · All Platforms · NOVA-Generated</div>
+  <p style="font-size:12px;color:var(--muted);margin-bottom:.75rem;">
+    <span class="tag tag-posted">posted</span> live · 
+    <span class="tag tag-queued">queued</span> approved, pending publish · 
+    <span class="tag tag-draft">draft</span> awaiting Step 6 gate (EMP approval required)
+  </p>
+  <table class="content-table">
+    <thead><tr><th>Platform</th><th>Scheduled</th><th>Caption / Hook</th><th>Status</th><th>Agent</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><span class="tag tag-li">LinkedIn</span></td>
+        <td style="white-space:nowrap;color:var(--muted);">Today 09:00</td>
+        <td>Swissdec ELM 6.0 is here. What changes for Swiss employers in 2026 and how TITANx300 is certified-ready. [7ST]</td>
+        <td><span class="tag tag-queued">queued</span></td>
+        <td style="color:var(--warn);">NOVA</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-ig">Instagram</span></td>
+        <td style="white-space:nowrap;color:var(--muted);">Today 11:00</td>
+        <td>Behind the scenes: how we built a 9-agent AI system that writes, schedules, and posts for us. 🤖 #BuildInPublic</td>
+        <td><span class="tag tag-draft">draft</span></td>
+        <td style="color:var(--warn);">NOVA</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-x">X</span></td>
+        <td style="white-space:nowrap;color:var(--muted);">Today 14:00</td>
+        <td>Your payroll is leaking money. Here's how AI catches the errors humans miss. #TITANx300 #PayrollAI</td>
+        <td><span class="tag tag-queued">queued</span></td>
+        <td style="color:var(--purple);">RELAY</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-fb">Facebook</span></td>
+        <td style="white-space:nowrap;color:var(--muted);">Tomorrow</td>
+        <td>First post: Introducing ASoDigital85 — your AI-powered digital products studio. [activates page insights]</td>
+        <td><span class="tag tag-draft">draft</span></td>
+        <td style="color:var(--warn);">NOVA</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-li">LinkedIn</span></td>
+        <td style="white-space:nowrap;color:var(--muted);">+2 days</td>
+        <td>Bellerive Financial Services AG reactivation: Our cross-border financial advisory approach in 2026. [Bellerive page]</td>
+        <td><span class="tag tag-draft">draft</span></td>
+        <td style="color:var(--warn);">NOVA</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-ig">Instagram</span></td>
+        <td style="white-space:nowrap;color:var(--muted);">+3 days</td>
+        <td>The 24 Apr post that got 82 shares — here's what was in it (reprise). #viral #AIAgents #BuildInPublic</td>
+        <td><span class="tag tag-draft">draft</span></td>
+        <td style="color:var(--warn);">NOVA</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 7. WEB ANALYTICS -->
+<div class="section">
+  <div class="section-title">7 · Web Analytics · Umami Cloud · 3 Sites</div>
+  <div class="web-note">
+        <strong>Umami Cloud · API key required</strong><br><br>
+        Site IDs configured and ready:<br>
+        <code>payroll.sevensprings.ch</code> → 1691bd2c-21b7-40a3-ba16-736c71b024f3<br>
+        <code>asodigital85.live</code> → 3659f422-0951-402e-a587-993625f41ed7<br>
+        <code>sevensprings.ch</code> → b874ae46-3512-4c28-af43-b6b384f4c1db<br><br>
+        Add <code>UMAMI_API_KEY</code> to GitHub Actions secrets → PULSE wires live stats automatically.
+      </div>
+</div>
+
+<!-- 8. DEX BOT -->
+<div class="section">
+  <div class="section-title">8 · DEX Trading Bot · dex-bot-v1 · Paper Mode</div>
+  <div class="metric-grid">
+    <div class="metric-card"><div class="metric-label">Mode</div><div class="metric-value">Paper Trading</div><div class="metric-sub warn-sub">Solana / Jupiter</div></div>
+    <div class="metric-card"><div class="metric-label">Circuit breakers</div><div class="metric-value">Active</div><div class="metric-sub success-sub">Telegram alerts: on</div></div>
+    <div class="metric-card"><div class="metric-label">Supabase</div><div class="metric-value">⚠ Pause risk</div><div class="metric-sub warn-sub">Free tier · inactive</div></div>
+    <div class="metric-card"><div class="metric-label">TimesFM signals</div><div class="metric-value">Mock</div><div class="metric-sub ">Render free tier · RAM limited</div></div>
   </div>
+</div>
 
-  <!-- ══ 4. LINKEDIN ══ -->
-  <div class="section">
-    <div class="section-title">4 · LinkedIn Organic · 4 Pages · Last 30 Days</div>
-    <div class="metric-grid">
-      <div class="metric-card">
-        <div class="metric-label">Total impressions</div>
-        <div class="metric-value">1,078</div>
-        <div class="metric-sub">all 4 pages</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-label">Total clicks</div>
-        <div class="metric-value">23</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-label">Reactions/Likes</div>
-        <div class="metric-value">7</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-label">Combined followers</div>
-        <div class="metric-value">316</div>
-        <div class="metric-sub">7ST 217 · BFS 87 · ASOD 11 · GSO 1</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-label">New followers · 30d</div>
-        <div class="metric-value">+9</div>
-        <div class="metric-up">7ST +6 · ASOD +3</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-label">Peak day</div>
-        <div class="metric-value" style="font-size:14px;">3 Jun</div>
-        <div class="metric-sub">127 impr. (7ST)</div>
-      </div>
-    </div>
-    <div class="page-cards">
-      <div class="page-card">
-        <div class="page-card-name"><span class="dot-live"></span>SevenSprings Technology AG</div>
-        <div class="page-stat"><span>Followers</span><span>217</span></div>
-        <div class="page-stat"><span>30d Impressions</span><span>820</span></div>
-        <div class="page-stat"><span>Clicks</span><span>21</span></div>
-        <div class="page-stat"><span>Likes</span><span>5</span></div>
-        <div class="page-stat"><span>New followers</span><span>+6</span></div>
-        <div class="page-stat"><span>Avg engagement</span><span>~4.7%</span></div>
-      </div>
-      <div class="page-card">
-        <div class="page-card-name"><span class="dot-live"></span>ASODigital85</div>
-        <div class="page-stat"><span>Followers</span><span>11</span></div>
-        <div class="page-stat"><span>30d Impressions</span><span>57</span></div>
-        <div class="page-stat"><span>Clicks</span><span>1</span></div>
-        <div class="page-stat"><span>New followers</span><span>+3</span></div>
-        <div class="page-stat"><span>Status</span><span style="color:var(--accent)">Early stage</span></div>
-      </div>
-      <div class="page-card">
-        <div class="page-card-name"><span class="dot-zero"></span>Bellerive Financial Services AG</div>
-        <div class="page-stat"><span>Followers</span><span>87</span></div>
-        <div class="page-stat"><span>30d Impressions</span><span>0</span></div>
-        <div class="page-stat"><span>Page views (30d)</span><span>3</span></div>
-        <div class="page-stat"><span>Status</span><span style="color:var(--warn)">Dormant</span></div>
-      </div>
-      <div class="page-card">
-        <div class="page-card-name"><span class="dot-na"></span>Getsecondopinion</div>
-        <div class="page-stat"><span>Followers</span><span>1</span></div>
-        <div class="page-stat"><span>30d Impressions</span><span>0</span></div>
-        <div class="page-stat"><span>Status</span><span style="color:var(--muted)">Legacy / inactive</span></div>
-      </div>
-    </div>
+<!-- 9. PROJECT PULSE -->
+<div class="section">
+  <div class="section-title">9 · Project Status Pulse</div>
+  <div class="project-grid">
+    <div class="proj-card"><div class="proj-name">social-agent-v1</div><div class="proj-status proj-blocked">⛔ Blocked at S8</div><div class="proj-note">Instagram OAuth — new Meta Developer app required</div></div>
+    <div class="proj-card"><div class="proj-name">KBA Football Clinics</div><div class="proj-status proj-paused">⏸ Pending approval</div><div class="proj-note">ElevenLabs voice clone + Ken Bastin sign-off</div></div>
+    <div class="proj-card"><div class="proj-name">DEX Bot (dex-bot-v1)</div><div class="proj-status proj-ok">✓ Paper mode active</div><div class="proj-note">Next: RAM upgrade for live TimesFM signals</div></div>
+    <div class="proj-card"><div class="proj-name">AliciaWonderMarket / AWM88</div><div class="proj-status proj-paused">⏸ Build phase</div><div class="proj-note">Netlify deploy + Paddle MoR pending</div></div>
+    <div class="proj-card"><div class="proj-name">VOXEL BLUE NFT</div><div class="proj-status proj-paused">⏸ 4/5 minted</div><div class="proj-note">#19 Prime Mover MP4 render pending</div></div>
+    <div class="proj-card"><div class="proj-name">TITANx300 (ELM 6.0)</div><div class="proj-status proj-paused">⏸ Upgrade in progress</div><div class="proj-note">validator.ts ELM 5.0 → 6.0 migration</div></div>
+    <div class="proj-card"><div class="proj-name">My Budget Coach</div><div class="proj-status proj-ok">✓ Live on App Store</div><div class="proj-note">CVR: 0.3% vs 3–8% benchmark — ASO needed</div></div>
+    <div class="proj-card"><div class="proj-name">AgriRent Russia</div><div class="proj-status proj-ok">✓ Live on Netlify</div><div class="proj-note">EU sanctions: AMBER risk — plain marketplace</div></div>
   </div>
+</div>
 
-  <!-- ══ 5. X / TWITTER ══ -->
-  <div class="section">
-    <div class="section-title">5 · X/Twitter · @Asodigital85 · RELAY Auto-Posts</div>
-    <div class="web-note" style="margin-bottom:1rem;">
-      <strong>Connector status:</strong> X/Twitter not yet connected to Windsor.ai. RELAY (social-agent-v1) posts automatically every cycle — metrics not yet centralised here. To wire: connect <code>x_organic</code> in Windsor.ai dashboard. Until then, post log is sourced from social-agent-v1 DB (table: <code>published_content</code>).
-    </div>
-    <table class="content-table">
-      <thead>
-        <tr>
-          <th>Time (CET)</th>
-          <th>Post preview</th>
-          <th>Status</th>
-          <th>Impressions</th>
-          <th>Likes</th>
-          <th>Source agent</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td style="color:var(--muted);white-space:nowrap;">13 Jun · 14:32</td>
-          <td>Swiss payroll compliance in 2026: 5 things every HR manager must know before Q3… 🇨🇭 #SwissPayroll #HR</td>
-          <td><span class="tag tag-posted">posted</span></td>
-          <td style="color:var(--muted);">— pending sync</td>
-          <td style="color:var(--muted);">—</td>
-          <td style="color:var(--purple);">RELAY</td>
-        </tr>
-        <tr>
-          <td style="color:var(--muted);white-space:nowrap;">Today · queued</td>
-          <td>Your payroll is leaking money. Here's how AI catches the errors humans miss. #TITANx300 #PayrollAI</td>
-          <td><span class="tag tag-queued">queued</span></td>
-          <td>—</td>
-          <td>—</td>
-          <td style="color:var(--purple);">RELAY</td>
-        </tr>
-        <tr>
-          <td style="color:var(--muted);white-space:nowrap;">Today · draft</td>
-          <td>We're building the Jarvis of payroll. Meet TITANx300 — Swissdec-certified, post-quantum signed, agentic. 🧠⚡</td>
-          <td><span class="tag tag-draft">draft</span></td>
-          <td>—</td>
-          <td>—</td>
-          <td style="color:var(--warn);">NOVA</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+<!-- 10. AGENT DIRECTIVES -->
+<div class="section">
+  <div class="section-title">10 · Agent Directives — Actionable &amp; Executable</div>
+  <div class="directive-list"><div class="directive"><span class="dir-agent ag-nova">NOVA</span><div class="dir-body"><div class="dir-action">Audit Instagram account for shadowban indicators; verify posting permissions and algorithm compliance status immediately</div><div class="dir-meta"><span class="priority-high">HIGH</span></div></div></div><div class="directive"><span class="dir-agent ag-nova">NOVA</span><div class="dir-body"><div class="dir-action">Initiate emergency content publishing schedule on Instagram with 3-5 posts over next 48 hours to restore engagement signals</div><div class="dir-meta"><span class="priority-high">HIGH</span></div></div></div><div class="directive"><span class="dir-agent ag-nova">NOVA</span><div class="dir-body"><div class="dir-action">Investigate X/Twitter pending status and resolve blockers to restore analytics data collection and platform access</div><div class="dir-meta"><span class="priority-high">HIGH</span></div></div></div><div class="directive"><span class="dir-agent ag-nova">NOVA</span><div class="dir-body"><div class="dir-action">Analyze LinkedIn peak performance drivers from June 3; replicate successful content format and posting time</div><div class="dir-meta"><span class="priority-med">MED</span></div></div></div><div class="directive"><span class="dir-agent ag-nova">NOVA</span><div class="dir-body"><div class="dir-action">Generate cross-platform content calendar prioritizing Instagram recovery while maintaining LinkedIn momentum through consistent posting</div><div class="dir-meta"><span class="priority-med">MED</span></div></div></div></div>
+</div>
 
-  <!-- ══ 6. CONTENT QUEUE (all platforms) ══ -->
-  <div class="section">
-    <div class="section-title">6 · Content Queue · All Platforms · NOVA-Generated</div>
-    <p style="font-size:12px;color:var(--muted);margin-bottom:.75rem;">Posts marked <span class="tag tag-queued" style="font-size:10px;">queued</span> are approved and pending publish. Posts marked <span class="tag tag-draft" style="font-size:10px;">draft</span> require Step 6 human gate approval before RELAY can publish. Posts marked <span class="tag tag-posted" style="font-size:10px;">posted</span> are live — metrics sourced from Windsor.ai where connected.</p>
-    <table class="content-table">
-      <thead>
-        <tr>
-          <th>Platform</th>
-          <th>Scheduled</th>
-          <th>Caption / Hook</th>
-          <th>Status</th>
-          <th>Agent</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><span class="tag tag-li">LinkedIn</span></td>
-          <td style="white-space:nowrap;color:var(--muted);">Today 09:00</td>
-          <td>Swissdec ELM 6.0 is here. Here's what changes for Swiss employers in 2026 and how TITANx300 is already certified-ready. [7ST page]</td>
-          <td><span class="tag tag-queued">queued</span></td>
-          <td style="color:var(--warn);">NOVA</td>
-        </tr>
-        <tr>
-          <td><span class="tag tag-ig">Instagram</span></td>
-          <td style="white-space:nowrap;color:var(--muted);">Today 11:00</td>
-          <td>Behind the scenes: how we built a 9-agent AI system that writes, schedules, and posts for us. 🤖 #BuildInPublic #AIAgents</td>
-          <td><span class="tag tag-draft">draft</span></td>
-          <td style="color:var(--warn);">NOVA</td>
-        </tr>
-        <tr>
-          <td><span class="tag tag-x">X</span></td>
-          <td style="white-space:nowrap;color:var(--muted);">Today 14:00</td>
-          <td>Your payroll is leaking money. Here's how AI catches the errors humans miss. #TITANx300 #PayrollAI</td>
-          <td><span class="tag tag-queued">queued</span></td>
-          <td style="color:var(--purple);">RELAY</td>
-        </tr>
-        <tr>
-          <td><span class="tag tag-fb">Facebook</span></td>
-          <td style="white-space:nowrap;color:var(--muted);">Tomorrow</td>
-          <td>First post: Introducing ASoDigital85 — your AI-powered digital products studio. [First publish to activate page insights]</td>
-          <td><span class="tag tag-draft">draft</span></td>
-          <td style="color:var(--warn);">NOVA</td>
-        </tr>
-        <tr>
-          <td><span class="tag tag-li">LinkedIn</span></td>
-          <td style="white-space:nowrap;color:var(--muted);">16 Jun</td>
-          <td>Bellerive Financial Services AG — reactivation post: Our approach to cross-border financial advisory in 2026. [Bellerive page]</td>
-          <td><span class="tag tag-draft">draft</span></td>
-          <td style="color:var(--warn);">NOVA</td>
-        </tr>
-        <tr>
-          <td><span class="tag tag-ig">Instagram</span></td>
-          <td style="white-space:nowrap;color:var(--muted);">17 Jun</td>
-          <td>The April 24 post that got 82 shares — here's what was in it (reprise format). #viral #AIAgents</td>
-          <td><span class="tag tag-draft">draft</span></td>
-          <td style="color:var(--warn);">NOVA</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+<!-- 11. DATA QUALITY -->
+<div class="section">
+  <div class="section-title">11 · Data Quality Log</div>
+  <div class="dq-row"><span class="dq-source">Instagram (Windsor.ai)</span><span class="dq-ok">✓ Live</span></div>
+  <div class="dq-row"><span class="dq-source">Facebook Organic (Windsor.ai)</span><span class="dq-warn">⚠ Connected · metrics = 0 · no posts</span></div>
+  <div class="dq-row"><span class="dq-source">LinkedIn · SevenSprings (Windsor.ai)</span><span class="dq-ok">✓ Live</span></div>
+  <div class="dq-row"><span class="dq-source">LinkedIn · ASODigital85 (Windsor.ai)</span><span class="dq-ok">✓ Live</span></div>
+  <div class="dq-row"><span class="dq-source">LinkedIn · Bellerive (Windsor.ai)</span><span class="dq-warn">⚠ Connected · zero activity</span></div>
+  <div class="dq-row"><span class="dq-source">LinkedIn · Getsecondopinion (Windsor.ai)</span><span class="dq-na">○ Dormant</span></div>
+  <div class="dq-row"><span class="dq-source">X/Twitter (Windsor.ai)</span><span class="dq-warn">⚠ Credentials submitted · propagating</span></div>
+  <div class="dq-row"><span class="dq-source">payroll.sevensprings.ch</span><span class="dq-warn">⚠ API key required (<code>1691bd2c-21b7-40a3-ba16-736c71b024f3</code>)</span></div><div class="dq-row"><span class="dq-source">asodigital85.live</span><span class="dq-warn">⚠ API key required (<code>3659f422-0951-402e-a587-993625f41ed7</code>)</span></div><div class="dq-row"><span class="dq-source">sevensprings.ch</span><span class="dq-warn">⚠ API key required (<code>b874ae46-3512-4c28-af43-b6b384f4c1db</code>)</span></div>
+  <div class="dq-row"><span class="dq-source">DEX Bot</span><span class="dq-warn">⚠ Paper mode · Supabase pause risk</span></div>
+  <div class="dq-row"><span class="dq-source">GA4</span><span class="dq-na">○ Tags pending for payroll research pages</span></div>
+</div>
 
-  <!-- ══ 7. WEB ANALYTICS ══ -->
-  <div class="section">
-    <div class="section-title">7 · Web Analytics · sevensprings.ch · payroll.sevensprings.ch · asodigital85.live</div>
-    <div class="web-note">
-      <strong>Umami Cloud · 3 site IDs configured</strong><br><br>
-      <strong>payroll.sevensprings.ch</strong> → <code>1691bd2c-21b7-40a3-ba16-736c71b024f3</code><br>
-      <strong>asodigital85.live</strong> → <code>3659f422-0951-402e-a587-993625f41ed7</code><br>
-      <strong>sevensprings.ch</strong> → <code>b874ae46-3512-4c28-af43-b6b384f4c1db</code><br><br>
-      Live stats require the Umami API key (bearer token) to be added to the daily build script environment variables. Once added, PULSE will inject sessions, unique visitors, bounce rate, and top pages here automatically.<br><br>
-      <strong>GA4:</strong> Tags for payroll.sevensprings.ch research pages are pending implementation (noted as backlog item in 7STSync).<br><br>
-      <em>Action: provide Umami API key to enable live data in next report cycle.</em>
-    </div>
-  </div>
-
-  <!-- ══ 8. DEX BOT ══ -->
-  <div class="section">
-    <div class="section-title">8 · DEX Trading Bot · dex-bot-v1 · Paper Mode</div>
-    <div class="metric-grid">
-      <div class="metric-card">
-        <div class="metric-label">Mode</div>
-        <div class="metric-value" style="font-size:14px;color:var(--warn);">Paper Trading</div>
-        <div class="metric-sub">Solana / Jupiter</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-label">Circuit breakers</div>
-        <div class="metric-value" style="font-size:14px;color:var(--success);">Active</div>
-        <div class="metric-sub">Telegram alerts: on</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-label">Supabase (jvywpd…)</div>
-        <div class="metric-value" style="font-size:14px;color:var(--warn);">⚠ Pause risk</div>
-        <div class="metric-sub">Free tier · inactive</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-label">TimesFM signals</div>
-        <div class="metric-value" style="font-size:14px;color:var(--muted);">Mock</div>
-        <div class="metric-sub">Render free tier · RAM limited</div>
-      </div>
-    </div>
-    <p style="font-size:12px;color:var(--muted);padding-left:4px;">Live P&L metrics will populate here once paper → live transition is authorised (EMP approval required per Asimov gate).</p>
-  </div>
-
-  <!-- ══ 9. PROJECT STATUS PULSE ══ -->
-  <div class="section">
-    <div class="section-title">9 · Project Status Pulse</div>
-    <div class="project-grid">
-      <div class="proj-card">
-        <div class="proj-name">social-agent-v1</div>
-        <div class="proj-status proj-blocked">⛔ Blocked at S8</div>
-        <div class="proj-blocker">Blocker: Instagram OAuth — new Meta Developer app required</div>
-      </div>
-      <div class="proj-card">
-        <div class="proj-name">KBA Football Clinics</div>
-        <div class="proj-status proj-paused">⏸ Pending approval</div>
-        <div class="proj-blocker">Awaiting: ElevenLabs voice clone + Ken Bastin content sign-off</div>
-      </div>
-      <div class="proj-card">
-        <div class="proj-name">DEX Bot (dex-bot-v1)</div>
-        <div class="proj-status proj-ok">✓ Paper mode active</div>
-        <div class="proj-blocker">Next: RAM upgrade on Render for live TimesFM signals</div>
-      </div>
-      <div class="proj-card">
-        <div class="proj-name">AliciaWonderMarket / AWM88</div>
-        <div class="proj-status proj-paused">⏸ Build phase</div>
-        <div class="proj-blocker">Next: Netlify deploys + Paddle MoR activation</div>
-      </div>
-      <div class="proj-card">
-        <div class="proj-name">VOXEL BLUE NFT</div>
-        <div class="proj-status proj-paused">⏸ 4/5 minted</div>
-        <div class="proj-blocker">Pending: #19 Prime Mover final MP4 render</div>
-      </div>
-      <div class="proj-card">
-        <div class="proj-name">TITANx300 (ELM 6.0)</div>
-        <div class="proj-status proj-paused">⏸ Upgrade in progress</div>
-        <div class="proj-blocker">validator.ts: ELM 5.0 → 6.0 migration pending</div>
-      </div>
-      <div class="proj-card">
-        <div class="proj-name">My Budget Coach</div>
-        <div class="proj-status proj-ok">✓ Live on App Store</div>
-        <div class="proj-blocker">Conversion: 0.3% (target 3–8%) — ASO + icon update needed</div>
-      </div>
-      <div class="proj-card">
-        <div class="proj-name">AgriRent Russia</div>
-        <div class="proj-status proj-ok">✓ Live on Netlify</div>
-        <div class="proj-blocker">EU sanctions: AMBER risk — plain matching marketplace</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ══ 10. AGENT DIRECTIVES ══ -->
-  <div class="section">
-    <div class="section-title">10 · Agent Directives · Actionable &amp; Executable · Today</div>
-    <div class="directive-list">
-
-      <div class="directive">
-        <span class="dir-agent ag-aria">ARIA</span>
-        <div class="dir-body">
-          <div class="dir-action"><strong>Prioritise S8 unblock.</strong> Create a new Meta Developer App for social-agent-v1 Instagram OAuth connector. This is the single highest-leverage action — it unlocks PULSE tracking, RELAY Instagram publishing, and full pipeline automation.</div>
-          <div class="dir-meta"><span class="priority-high">HIGH</span> · Deadline: today · Executor: EMP (manual Meta setup) + ARIA coordination</div>
-        </div>
-      </div>
-
-      <div class="directive">
-        <span class="dir-agent ag-nova">NOVA</span>
-        <div class="dir-body">
-          <div class="dir-action"><strong>Reverse-engineer the 24 April Instagram spike.</strong> Query DB for the post published ~23–24 April. Extract format, caption length, hashtags, time of day. Generate 3 replication variants for this week. The 82-share event is a signal — it must be studied and repeated.</div>
-          <div class="dir-meta"><span class="priority-high">HIGH</span> · Deadline: today · Output: 3 post variants to content queue</div>
-        </div>
-      </div>
-
-      <div class="directive">
-        <span class="dir-agent ag-nova">NOVA</span>
-        <div class="dir-body">
-          <div class="dir-action"><strong>Draft Facebook first post</strong> for ASoDigital85 page — a simple brand intro post to activate page insights in Windsor.ai. Keep it professional, brand-consistent, with a CTA to follow. Submit for Step 6 gate approval.</div>
-          <div class="dir-meta"><span class="priority-high">HIGH</span> · Deadline: today · Platform: Facebook</div>
-        </div>
-      </div>
-
-      <div class="directive">
-        <span class="dir-agent ag-nova">NOVA</span>
-        <div class="dir-body">
-          <div class="dir-action"><strong>Draft Bellerive Financial Services AG LinkedIn reactivation post.</strong> 87 followers waiting — no content in 30+ days. One thoughtful post about cross-border financial advisory in 2026 would re-engage the audience at zero cost.</div>
-          <div class="dir-meta"><span class="priority-med">MED</span> · Deadline: 16 Jun · Platform: LinkedIn · Bellerive page</div>
-        </div>
-      </div>
-
-      <div class="directive">
-        <span class="dir-agent ag-relay">RELAY</span>
-        <div class="dir-body">
-          <div class="dir-action"><strong>Connect X/Twitter to Windsor.ai</strong> (<code>x_organic</code> connector) so PULSE can pull post metrics automatically. Until then, manually log yesterday's auto-post performance in the content queue table above.</div>
-          <div class="dir-meta"><span class="priority-med">MED</span> · Deadline: this week · Action: Windsor.ai dashboard → connect X</div>
-        </div>
-      </div>
-
-      <div class="directive">
-        <span class="dir-agent ag-pulse">PULSE</span>
-        <div class="dir-body">
-          <div class="dir-action"><strong>Add Umami API key to environment.</strong> Site IDs are already configured. Once the bearer token is provided, PULSE injects live web stats (sessions, visitors, bounce rate, top pages for all 3 sites) into Section 7 of this report automatically.</div>
-          <div class="dir-meta"><span class="priority-med">MED</span> · Action: EMP provides Umami API key → PULSE wires Section 7</div>
-        </div>
-      </div>
-
-      <div class="directive">
-        <span class="dir-agent ag-scout">SCOUT</span>
-        <div class="dir-body">
-          <div class="dir-action"><strong>Research best posting times for Swiss B2B LinkedIn.</strong> 7ST's best days appear to be Tue–Thu based on June data. Validate against LinkedIn best-practice benchmarks and propose a fixed 3x/week posting schedule for 7ST and 1x/week for ASOD LinkedIn.</div>
-          <div class="dir-meta"><span class="priority-low">LOW</span> · Deadline: by next report · Output: recommended schedule</div>
-        </div>
-      </div>
-
-      <div class="directive">
-        <span class="dir-agent ag-tempo">TEMPO</span>
-        <div class="dir-body">
-          <div class="dir-action"><strong>Schedule next report generation for Mon 15 Jun at 07:00 CET.</strong> Once Netlify deploy is live (aliciawondermarket account), push HTML to <code>/daily/2026-06-15.html</code> and send Telegram summary to the designated channel. This is the template to follow.</div>
-          <div class="dir-meta"><span class="priority-high">HIGH</span> · Recurring · Daily 07:00 CET</div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- ══ 11. DATA QUALITY LOG ══ -->
-  <div class="section">
-    <div class="section-title">11 · Data Quality Log</div>
-    <div class="dq-row"><span class="dq-source">Instagram (Windsor.ai)</span><span class="dq-ok">✓ Live — daily metrics flowing</span></div>
-    <div class="dq-row"><span class="dq-source">Facebook Organic (Windsor.ai)</span><span class="dq-warn">⚠ Connected · all metrics = 0 · no published posts</span></div>
-    <div class="dq-row"><span class="dq-source">LinkedIn · SevenSprings (Windsor.ai)</span><span class="dq-ok">✓ Live — 30d impressions, clicks, followers</span></div>
-    <div class="dq-row"><span class="dq-source">LinkedIn · ASODigital85 (Windsor.ai)</span><span class="dq-ok">✓ Live — low volume but data flowing</span></div>
-    <div class="dq-row"><span class="dq-source">LinkedIn · Bellerive (Windsor.ai)</span><span class="dq-warn">⚠ Connected · zero post activity · page views only</span></div>
-    <div class="dq-row"><span class="dq-source">LinkedIn · Getsecondopinion (Windsor.ai)</span><span class="dq-na">○ Connected · 1 follower · dormant</span></div>
-    <div class="dq-row"><span class="dq-source">X/Twitter (Windsor.ai)</span><span class="dq-na">○ Not connected — x_organic connector needed</span></div>
-    <div class="dq-row"><span class="dq-source">Umami · sevensprings.ch</span><span class="dq-warn">⚠ Site ID configured · API key missing</span></div>
-    <div class="dq-row"><span class="dq-source">Umami · payroll.sevensprings.ch</span><span class="dq-warn">⚠ Site ID configured · API key missing</span></div>
-    <div class="dq-row"><span class="dq-source">Umami · asodigital85.live</span><span class="dq-warn">⚠ Site ID configured · API key missing</span></div>
-    <div class="dq-row"><span class="dq-source">DEX Bot (Supabase)</span><span class="dq-warn">⚠ Paper mode · Supabase pause risk · live P&L = N/A</span></div>
-    <div class="dq-row"><span class="dq-source">GA4</span><span class="dq-na">○ Tags pending for payroll.sevensprings.ch research pages</span></div>
-  </div>
-
-  <!-- ══ FOOTER ══ -->
-  <div class="report-footer">
-    <span>ASODI85 · Jarvic07 · Daily Intelligence Report · DIR-20260614-001</span>
-    <span>Generated by ARIA · Anthropic Claude Sonnet 4.6</span>
-    <span>Next report: 15 Jun 2026 · 07:00 CET</span>
-  </div>
+<div class="report-footer">
+  <span>ASODI85 · Jarvic07 · DIR-20260614-001</span>
+  <span>Generated by ARIA · Claude Haiku 4.5</span>
+  <span>Next: 2026-06-15 · 07:00 CET</span>
+</div>
 
 </div>
 </body>
