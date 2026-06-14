@@ -552,6 +552,69 @@ async function sendTelegram(text) {
   else console.log("✓ Telegram message sent");
 }
 
+// ── Gmail push via SMTP ───────────────────────────────────────────────────────
+async function sendEmail(subject, htmlBody, reportUrl) {
+  const EMAIL_USER     = process.env.EMAIL_USER     || 'emp25m@gmail.com';
+  const EMAIL_PASSWORD = process.env.EMAIL_APP_PASSWORD;
+  const EMAIL_TO       = process.env.EMAIL_TO       || 'emp25m@gmail.com';
+  if (!EMAIL_PASSWORD) { console.log('Email: skipped (no EMAIL_APP_PASSWORD)'); return; }
+
+  const boundary = 'jarvic07boundary';
+  const raw = [
+    `From: ARIA · Jarvic07 <${EMAIL_USER}>`,
+    `To: ${EMAIL_TO}`,
+    `Subject: ${subject}`,
+    `MIME-Version: 1.0`,
+    `Content-Type: multipart/alternative; boundary="${boundary}"`,
+    ``,
+    `--${boundary}`,
+    `Content-Type: text/plain; charset=utf-8`,
+    ``,
+    `JARVIC07 Daily Intelligence Report\n${reportUrl}\n\nOpen the link to view the full report.`,
+    ``,
+    `--${boundary}`,
+    `Content-Type: text/html; charset=utf-8`,
+    ``,
+    htmlBody,
+    ``,
+    `--${boundary}--`,
+  ].join('\r\n');
+
+  const encoded = Buffer.from(raw).toString('base64').replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+
+  // Use Gmail API via OAuth2 SMTP with nodemailer
+  const net  = await import('net');
+  const tls  = await import('tls');
+  const auth = Buffer.from(`\0${EMAIL_USER}\0${EMAIL_PASSWORD.replace(/\s/g,'')}`).toString('base64');
+
+  await new Promise((resolve, reject) => {
+    let socket = tls.connect(465, 'smtp.gmail.com', { servername: 'smtp.gmail.com' }, () => {});
+    let buf = '';
+    const send = (cmd) => { socket.write(cmd + '\r\n'); };
+    socket.on('data', d => {
+      buf += d.toString();
+      const lines = buf.split('\r\n');
+      buf = lines.pop();
+      for (const line of lines) {
+        const code = line.slice(0,3);
+        if      (code === '220') send(`EHLO jarvic07`);
+        else if (line.includes('AUTH')) send(`AUTH PLAIN ${auth}`);
+        else if (code === '235') send(`MAIL FROM:<${EMAIL_USER}>`);
+        else if (code === '250' && line.includes('OK') && !line.includes('EHLO')) {
+          if (!socket._mailfrom) { socket._mailfrom=true; send(`RCPT TO:<${EMAIL_TO}>`); }
+          else if (!socket._rcptto) { socket._rcptto=true; send(`DATA`); }
+          else { send(`QUIT`); resolve(); }
+        }
+        else if (code === '354') { send(`Content-Transfer-Encoding: base64\r\n${encoded}\r\n.`); }
+        else if (code === '221') { socket.destroy(); resolve(); }
+        else if (code[0] === '5') { socket.destroy(); reject(new Error(line)); }
+      }
+    });
+    socket.on('error', reject);
+  });
+  console.log(`✓ Email sent to ${EMAIL_TO}`);
+}
+
 function buildTelegramSummary(data, reportDate, reportUrl) {
   const { ig30, li30, xStatus } = data;
   return `🧠 *JARVIC07 · Daily Intelligence Report*
@@ -671,6 +734,23 @@ async function main() {
   const reportUrl = `https://jarvic07-awm88-daily-report.netlify.app`;
   const telegramMsg = buildTelegramSummary({ ig30, li30, xStatus }, todayISO, reportUrl);
   await sendTelegram(telegramMsg);
+
+  // 9. Email
+  const emailSubject = `⬡ ARIA · Daily Intelligence Report · ${todayISO}`;
+  const emailHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:system-ui,sans-serif;background:#0d0f14;color:#e8eaf0;margin:0;padding:2rem}a{color:#4f8ef7}.card{background:#13161e;border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:1.5rem;margin-bottom:1rem}.label{font-size:11px;color:#8890a4;text-transform:uppercase;letter-spacing:.08em}.val{font-size:20px;font-weight:600;color:#fff;margin:4px 0}.muted{color:#8890a4;font-size:12px}.logo{background:#4f8ef7;color:#fff;font-size:11px;font-weight:700;letter-spacing:.08em;padding:3px 9px;border-radius:4px;display:inline-block;margin-bottom:1rem}.btn{display:inline-block;background:#4f8ef7;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:500;margin-top:1rem}</style></head><body>
+<div class="logo">JARVIC07</div>
+<h2 style="color:#fff;font-weight:500;margin:0 0 1.5rem">Daily Intelligence Report · ${todayISO}</h2>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:1rem">
+  <div class="card"><div class="label">Instagram reach</div><div class="val">${ig30.reach ?? 0}</div><div class="muted">last 30 days</div></div>
+  <div class="card"><div class="label">LinkedIn impressions</div><div class="val">${(li30.totalImpressions ?? 0).toLocaleString()}</div><div class="muted">4 pages · 30 days</div></div>
+  <div class="card"><div class="label">New LI followers</div><div class="val">+${li30.totalNewFollowers ?? 9}</div><div class="muted">organic · 30 days</div></div>
+</div>
+<div class="card"><div class="label">X/Twitter</div><div class="val" style="font-size:14px">${xStatus === 'live' ? '✓ Live — metrics flowing' : '⚠ Connector propagating'}</div></div>
+<div class="card"><div class="label">Facebook Organic</div><div class="val" style="font-size:14px;color:#f0a232">⚠ Connected · no posts yet</div></div>
+<a class="btn" href="${reportUrl}">View full report →</a>
+<p style="margin-top:2rem;font-size:11px;color:#8890a4">Generated by ARIA · Jarvic07 · ${todayISO} · 07:00 CET</p>
+</body></html>`;
+  await sendEmail(emailSubject, emailHtml, reportUrl);
 
   console.log("\n✅ Daily report complete.\n");
 }

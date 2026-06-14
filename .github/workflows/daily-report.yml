@@ -31,10 +31,12 @@ jobs:
       - name: Generate daily report
         env:
           WINDSOR_API_KEY:      ${{ secrets.WINDSOR_API_KEY }}
-          UMAMI_API_KEY:        ${{ secrets.UMAMI_API_KEY }}
           TELEGRAM_BOT_TOKEN:   ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID:     ${{ secrets.TELEGRAM_CHAT_ID }}
           ANTHROPIC_API_KEY:    ${{ secrets.ANTHROPIC_API_KEY }}
+          EMAIL_APP_PASSWORD:   ${{ secrets.EMAIL_APP_PASSWORD }}
+          EMAIL_USER:           emp25m@gmail.com
+          EMAIL_TO:             emp25m@gmail.com
         run: node scripts/generate-report.js
 
       - name: Commit report to repo
