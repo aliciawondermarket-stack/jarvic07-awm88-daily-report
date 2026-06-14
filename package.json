@@ -10,6 +10,9 @@
   "engines": {
     "node": ">=20"
   },
+  "dependencies": {
+    "nodemailer": "^6.9.14"
+  },
   "keywords": ["aria", "asodi85", "jarvic07", "daily-report", "windsor-ai", "social-analytics"],
   "author": "Embisa M'Peti — SevenSprings Technology AG / ASODigital85",
   "license": "UNLICENSED"

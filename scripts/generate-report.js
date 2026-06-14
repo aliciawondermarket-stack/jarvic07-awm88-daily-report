@@ -552,65 +552,25 @@ async function sendTelegram(text) {
   else console.log("✓ Telegram message sent");
 }
 
-// ── Gmail push via SMTP ───────────────────────────────────────────────────────
+// ── Gmail push via nodemailer ─────────────────────────────────────────────────
 async function sendEmail(subject, htmlBody, reportUrl) {
-  const EMAIL_USER     = process.env.EMAIL_USER     || 'emp25m@gmail.com';
+  const EMAIL_USER     = process.env.EMAIL_USER         || 'emp25m@gmail.com';
   const EMAIL_PASSWORD = process.env.EMAIL_APP_PASSWORD;
-  const EMAIL_TO       = process.env.EMAIL_TO       || 'emp25m@gmail.com';
+  const EMAIL_TO       = process.env.EMAIL_TO           || 'emp25m@gmail.com';
   if (!EMAIL_PASSWORD) { console.log('Email: skipped (no EMAIL_APP_PASSWORD)'); return; }
 
-  const boundary = 'jarvic07boundary';
-  const raw = [
-    `From: ARIA · Jarvic07 <${EMAIL_USER}>`,
-    `To: ${EMAIL_TO}`,
-    `Subject: ${subject}`,
-    `MIME-Version: 1.0`,
-    `Content-Type: multipart/alternative; boundary="${boundary}"`,
-    ``,
-    `--${boundary}`,
-    `Content-Type: text/plain; charset=utf-8`,
-    ``,
-    `JARVIC07 Daily Intelligence Report\n${reportUrl}\n\nOpen the link to view the full report.`,
-    ``,
-    `--${boundary}`,
-    `Content-Type: text/html; charset=utf-8`,
-    ``,
-    htmlBody,
-    ``,
-    `--${boundary}--`,
-  ].join('\r\n');
+  const nodemailer = (await import('nodemailer')).default;
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: { user: EMAIL_USER, pass: EMAIL_PASSWORD.replace(/\s/g, '') },
+  });
 
-  const encoded = Buffer.from(raw).toString('base64').replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
-
-  // Use Gmail API via OAuth2 SMTP with nodemailer
-  const net  = await import('net');
-  const tls  = await import('tls');
-  const auth = Buffer.from(`\0${EMAIL_USER}\0${EMAIL_PASSWORD.replace(/\s/g,'')}`).toString('base64');
-
-  await new Promise((resolve, reject) => {
-    let socket = tls.connect(465, 'smtp.gmail.com', { servername: 'smtp.gmail.com' }, () => {});
-    let buf = '';
-    const send = (cmd) => { socket.write(cmd + '\r\n'); };
-    socket.on('data', d => {
-      buf += d.toString();
-      const lines = buf.split('\r\n');
-      buf = lines.pop();
-      for (const line of lines) {
-        const code = line.slice(0,3);
-        if      (code === '220') send(`EHLO jarvic07`);
-        else if (line.includes('AUTH')) send(`AUTH PLAIN ${auth}`);
-        else if (code === '235') send(`MAIL FROM:<${EMAIL_USER}>`);
-        else if (code === '250' && line.includes('OK') && !line.includes('EHLO')) {
-          if (!socket._mailfrom) { socket._mailfrom=true; send(`RCPT TO:<${EMAIL_TO}>`); }
-          else if (!socket._rcptto) { socket._rcptto=true; send(`DATA`); }
-          else { send(`QUIT`); resolve(); }
-        }
-        else if (code === '354') { send(`Content-Transfer-Encoding: base64\r\n${encoded}\r\n.`); }
-        else if (code === '221') { socket.destroy(); resolve(); }
-        else if (code[0] === '5') { socket.destroy(); reject(new Error(line)); }
-      }
-    });
-    socket.on('error', reject);
+  await transporter.sendMail({
+    from: `"ARIA · Jarvic07" <${EMAIL_USER}>`,
+    to: EMAIL_TO,
+    subject,
+    text: `JARVIC07 Daily Intelligence Report\n${reportUrl}\n\nOpen the link to view the full report.`,
+    html: htmlBody,
   });
   console.log(`✓ Email sent to ${EMAIL_TO}`);
 }
