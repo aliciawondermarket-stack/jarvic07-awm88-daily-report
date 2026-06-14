@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>JARVIC07 · Access</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0d0f14;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:system-ui,sans-serif}
+.card{background:#13161e;border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:2rem 2.5rem;width:100%;max-width:340px}
+.logo{font-size:11px;font-weight:700;letter-spacing:.1em;color:#4f8ef7;background:rgba(79,142,247,.15);padding:3px 9px;border-radius:4px;display:inline-block;margin-bottom:1.5rem}
+h1{font-size:18px;color:#fff;font-weight:500;margin-bottom:.4rem}
+p{font-size:13px;color:#8890a4;margin-bottom:1.5rem}
+input{width:100%;background:#0d0f14;border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:10px 14px;color:#e8eaf0;font-size:14px;outline:none;margin-bottom:1rem}
+input:focus{border-color:rgba(79,142,247,.5)}
+button{width:100%;background:#4f8ef7;color:#fff;border:none;border-radius:8px;padding:11px;font-size:14px;font-weight:500;cursor:pointer}
+button:hover{background:#378add}
+.err{font-size:12px;color:#e85555;margin-top:.75rem;display:none}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">JARVIC07</div>
+  <h1>Daily Intelligence Report</h1>
+  <p>Enter access password to continue</p>
+  <input type="password" id="pw" placeholder="Password" onkeydown="if(event.key==='Enter')check()">
+  <button onclick="check()">Access report</button>
+  <div class="err" id="err">Incorrect password</div>
+</div>
+<script>
+const HASH='299a5dc60cc6b7233fc152014212f9fc3d2cda4cfc1ab5350b70ed97e7cca53d';
+function check(){
+  const v=document.getElementById('pw').value;
+  crypto.subtle.digest('SHA-256',new TextEncoder().encode(v)).then(b=>{
+    const hex=Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('');
+    if(hex===HASH){
+      sessionStorage.setItem('jarvic07_auth','1');
+      window.location.href='/';
+    } else {
+      document.getElementById('err').style.display='block';
+      document.getElementById('pw').value='';
+      document.getElementById('pw').focus();
+    }
+  });
+}
+</script>
+</body>
+</html>
