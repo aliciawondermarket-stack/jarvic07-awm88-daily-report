@@ -1,0 +1,27 @@
+# Netlify configuration for jarvic07-awm88-daily-report
+# No build step — GitHub Actions generates index.html + reports/
+# Netlify simply serves the static files
+
+[build]
+  publish = "."
+
+# Redirect /daily → root index
+[[redirects]]
+  from  = "/daily"
+  to    = "/"
+  status = 200
+
+# Archive: /reports/YYYY-MM-DD → serve the specific day's file
+[[redirects]]
+  from  = "/reports/:date"
+  to    = "/reports/:date.html"
+  status = 200
+
+# Security headers
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options        = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy        = "strict-origin-when-cross-origin"
+    Cache-Control          = "no-store"
