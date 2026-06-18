@@ -2,47 +2,162 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>JARVIC07 · Access</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JARVIC07 · ARIA Portal · Access</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:#0d0f14;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:system-ui,sans-serif}
-.card{background:#13161e;border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:2rem 2.5rem;width:100%;max-width:340px}
-.logo{font-size:11px;font-weight:700;letter-spacing:.1em;color:#4f8ef7;background:rgba(79,142,247,.15);padding:3px 9px;border-radius:4px;display:inline-block;margin-bottom:1.5rem}
-h1{font-size:18px;color:#fff;font-weight:500;margin-bottom:.4rem}
-p{font-size:13px;color:#8890a4;margin-bottom:1.5rem}
-input{width:100%;background:#0d0f14;border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:10px 14px;color:#e8eaf0;font-size:14px;outline:none;margin-bottom:1rem}
-input:focus{border-color:rgba(79,142,247,.5)}
-button{width:100%;background:#4f8ef7;color:#fff;border:none;border-radius:8px;padding:11px;font-size:14px;font-weight:500;cursor:pointer}
-button:hover{background:#378add}
-.err{font-size:12px;color:#e85555;margin-top:.75rem;display:none}
+  :root{--bg:#070b14;--surface:#0d1525;--card:#121e30;--border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14);--text:#eef2ff;--muted:#7c8fb5;--dim:#3d4f6e;--blue:#4f8ef7;--green:#29c78b;--amber:#f5a832;--red:#f47474}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1rem}
+  .gate{background:var(--card);border:1px solid var(--border2);border-radius:16px;padding:2.5rem 2rem;width:100%;max-width:380px;display:flex;flex-direction:column;gap:1.5rem}
+  .brand{text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px}
+  .brand-hex{font-size:28px;color:var(--blue);line-height:1}
+  .brand-name{font-size:13px;font-weight:700;letter-spacing:0.12em;color:var(--muted);text-transform:uppercase}
+  .brand-sub{font-size:11px;color:var(--dim);letter-spacing:0.06em}
+  .divider{border:none;border-top:1px solid var(--border);margin:0}
+  .field{display:flex;flex-direction:column;gap:6px}
+  .field label{font-size:11px;font-weight:600;letter-spacing:0.08em;color:var(--muted);text-transform:uppercase}
+  .field input{background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:inherit;font-size:14px;padding:11px 14px;width:100%;outline:none;transition:border-color 0.2s}
+  .field input:focus{border-color:var(--blue)}
+  .field input.error{border-color:var(--red)}
+  .field input.success{border-color:var(--green)}
+  .btn{background:var(--blue);color:#fff;border:none;border-radius:8px;cursor:pointer;font-family:inherit;font-size:14px;font-weight:600;padding:12px;width:100%;transition:opacity 0.2s}
+  .btn:hover{opacity:0.88}
+  .btn:active{transform:scale(0.98)}
+  .btn-ghost{background:transparent;border:1px solid var(--border);color:var(--muted);padding:10px}
+  .btn-ghost:hover{border-color:var(--blue);color:var(--blue);opacity:1}
+  .msg{font-size:12px;padding:8px 12px;border-radius:6px;display:none}
+  .msg.error{background:rgba(244,116,116,0.12);border:1px solid rgba(244,116,116,0.25);color:var(--red);display:block}
+  .msg.success{background:rgba(41,199,139,0.12);border:1px solid rgba(41,199,139,0.25);color:var(--green);display:block}
+  .forgot-link{text-align:center;font-size:12px;color:var(--dim);cursor:pointer;transition:color 0.2s;background:none;border:none;font-family:inherit;width:100%}
+  .forgot-link:hover{color:var(--blue)}
+  /* MODAL */
+  .modal-overlay{position:fixed;inset:0;background:rgba(4,7,15,0.75);z-index:100;display:none;align-items:center;justify-content:center;padding:1rem}
+  .modal-overlay.open{display:flex}
+  .modal{background:var(--card);border:1px solid var(--border2);border-radius:14px;padding:2rem;width:100%;max-width:360px;display:flex;flex-direction:column;gap:1.25rem}
+  .modal-hdr{display:flex;align-items:center;justify-content:space-between}
+  .modal-title{font-size:15px;font-weight:700}
+  .modal-close{background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--muted);cursor:pointer;font-size:16px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;transition:color 0.2s}
+  .modal-close:hover{color:var(--text)}
+  .modal-desc{font-size:12px;color:var(--muted);line-height:1.6}
+  .recovery-result{background:var(--surface);border:1px solid var(--green);border-radius:8px;padding:12px 14px;font-size:13px;display:none;flex-direction:column;gap:4px}
+  .recovery-result span{font-size:11px;color:var(--green);text-transform:uppercase;letter-spacing:0.07em;font-weight:600}
+  .recovery-result code{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;color:var(--text);letter-spacing:0.04em;word-break:break-all}
+  .footer{text-align:center;font-size:10px;color:var(--dim);line-height:1.7}
 </style>
 </head>
 <body>
-<div class="card">
-  <div class="logo">JARVIC07</div>
-  <h1>Daily Intelligence Report</h1>
-  <p>Enter access password to continue</p>
-  <input type="password" id="pw" placeholder="Password" onkeydown="if(event.key==='Enter')check()">
-  <button onclick="check()">Access report</button>
-  <div class="err" id="err">Incorrect password</div>
+
+<div class="gate">
+  <div class="brand">
+    <div class="brand-hex">⬡</div>
+    <div class="brand-name">JARVIC07 · ARIA</div>
+    <div class="brand-sub">Daily Intelligence Report · Restricted Access</div>
+  </div>
+  <hr class="divider">
+  <div class="field">
+    <label for="pwd">Access code</label>
+    <input type="password" id="pwd" placeholder="Enter access code" autocomplete="current-password">
+  </div>
+  <div id="loginMsg" class="msg"></div>
+  <button class="btn" id="loginBtn">Access Report</button>
+  <button class="forgot-link" id="forgotBtn">Forgot access code?</button>
+  <div class="footer">ASODigital85 · SevenSprings Technology AG<br>Authorised access only · 18 June 2026</div>
 </div>
+
+<!-- FORGOT PASSWORD MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-title">Recover access code</div>
+      <button class="modal-close" id="modalClose" aria-label="Close">✕</button>
+    </div>
+    <p class="modal-desc">Enter your registered recovery email. If it matches the authorised address on file, your access code will be revealed.</p>
+    <div class="field">
+      <label for="recoveryEmail">Recovery email</label>
+      <input type="email" id="recoveryEmail" placeholder="your@email.com" autocomplete="email">
+    </div>
+    <div id="recoveryMsg" class="msg"></div>
+    <div class="recovery-result" id="recoveryResult">
+      <span>Access code recovered</span>
+      <code id="recoveredPwd"></code>
+    </div>
+    <button class="btn" id="recoverBtn">Verify &amp; recover</button>
+    <button class="btn btn-ghost" id="modalCancelBtn">Cancel</button>
+  </div>
+</div>
+
 <script>
-const HASH='299a5dc60cc6b7233fc152014212f9fc3d2cda4cfc1ab5350b70ed97e7cca53d';
-function check(){
-  const v=document.getElementById('pw').value;
-  crypto.subtle.digest('SHA-256',new TextEncoder().encode(v)).then(b=>{
-    const hex=Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('');
-    if(hex===HASH){
-      sessionStorage.setItem('jarvic07_auth','1');
-      window.location.href='/';
-    } else {
-      document.getElementById('err').style.display='block';
-      document.getElementById('pw').value='';
-      document.getElementById('pw').focus();
-    }
-  });
+const PWD_HASH = 'c7a03df2363a8271ac438bb26347f9b609845ff00ece71a62cd2b5fe99eaa083';
+const EMAIL_HASH = '2dc14a395305cc6d3dc270a367cbdf63bbc96b4116885a49261f0f395a5ccaf1';
+const ENCODED_PWD = '42b22656245afe5d0ff4548742ee';
+
+async function sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
 }
+
+function xorDecode(hexEncoded, hexKey) {
+  const enc = [];
+  for (let i = 0; i < hexEncoded.length; i += 2) enc.push(parseInt(hexEncoded.substr(i, 2), 16));
+  const key = [];
+  for (let i = 0; i < hexKey.length; i += 2) key.push(parseInt(hexKey.substr(i, 2), 16));
+  return enc.map((b, i) => String.fromCharCode(b ^ key[i])).join('');
+}
+
+// LOGIN
+document.getElementById('loginBtn').addEventListener('click', async () => {
+  const val = document.getElementById('pwd').value.trim();
+  const msg = document.getElementById('loginMsg');
+  const inp = document.getElementById('pwd');
+  if (!val) { msg.className = 'msg error'; msg.textContent = 'Enter your access code.'; return; }
+  const h = await sha256(val);
+  if (h === PWD_HASH) {
+    inp.className = 'field input success';
+    msg.className = 'msg success'; msg.textContent = 'Access granted. Loading report…';
+    sessionStorage.setItem('jarvic07_auth', 'true');
+    setTimeout(() => { window.location.href = 'index.html'; }, 700);
+  } else {
+    inp.className = 'field input error';
+    msg.className = 'msg error'; msg.textContent = 'Incorrect access code. Try again.';
+    setTimeout(() => { inp.className = ''; msg.className = 'msg'; }, 2000);
+  }
+});
+
+document.getElementById('pwd').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('loginBtn').click(); });
+
+// MODAL
+function openModal() { document.getElementById('modalOverlay').classList.add('open'); document.getElementById('recoveryEmail').focus(); }
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.getElementById('recoveryEmail').value = '';
+  document.getElementById('recoveryMsg').className = 'msg';
+  document.getElementById('recoveryResult').style.display = 'none';
+}
+document.getElementById('forgotBtn').addEventListener('click', openModal);
+document.getElementById('modalClose').addEventListener('click', closeModal);
+document.getElementById('modalCancelBtn').addEventListener('click', closeModal);
+document.getElementById('modalOverlay').addEventListener('click', e => { if (e.target === document.getElementById('modalOverlay')) closeModal(); });
+
+// RECOVERY
+document.getElementById('recoverBtn').addEventListener('click', async () => {
+  const email = document.getElementById('recoveryEmail').value.trim().toLowerCase();
+  const msg = document.getElementById('recoveryMsg');
+  const result = document.getElementById('recoveryResult');
+  if (!email) { msg.className = 'msg error'; msg.textContent = 'Enter your recovery email.'; return; }
+  const h = await sha256(email);
+  if (h === EMAIL_HASH) {
+    msg.className = 'msg';
+    const decoded = xorDecode(ENCODED_PWD, h);
+    document.getElementById('recoveredPwd').textContent = decoded;
+    result.style.display = 'flex';
+    document.getElementById('recoveryEmail').classList.add('success');
+  } else {
+    result.style.display = 'none';
+    msg.className = 'msg error'; msg.textContent = 'Email not recognised. Contact the portal administrator.';
+    setTimeout(() => { msg.className = 'msg'; document.getElementById('recoveryEmail').value = ''; }, 3000);
+  }
+});
+document.getElementById('recoveryEmail').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('recoverBtn').click(); });
 </script>
 </body>
 </html>
