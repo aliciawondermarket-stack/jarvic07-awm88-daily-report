@@ -14,7 +14,7 @@
 [[headers]]
   for = "/*"
   [headers.values]
-    X-Frame-Options        = "DENY"
+    Content-Security-Policy = "frame-ancestors 'self' https://cassiopee01.netlify.app https://cassiopee-8yv.pages.dev"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy        = "strict-origin-when-cross-origin"
     Cache-Control          = "no-store"
